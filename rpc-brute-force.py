@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import argparse
@@ -25,14 +25,14 @@ class workerthread(threading.Thread):
                 out = s.run(["rpcclient", "-U", "{}%{}".format(self.user, pwd), self.rhost, "-c quit"], stdout=s.PIPE, stderr=s.PIPE, encoding="utf-8")
 
                 if ('Error' or 'DENIED' or 'TIMEOUT') not in out.stdout:
-                    print 'Success! user:{} pass:{}'.format(self.user, pwd)
+                    print ('Success! user:{} pass:{}'.format(self.user, pwd))
                     sys.exit()
 
                 elif 'TIMEOUT' in out.stdout:
-                    print 'Connection issues. exiting.'
+                    print ('Connection issues. exiting.')
                     sys.exit()
                 else:
-                    print '{}/{} - {} failed.'.format(self.q.qsize(), self.lc, pwd)
+                    print ('{}/{} - {} failed.'.format(self.q.qsize(), self.lc, pwd))
             
             except Exception e:
                 print (e)
@@ -73,5 +73,5 @@ if __name__ == '__main__':
     pwdq.join()  
 
     runtime = round(time.time() - start, 2)
-    print 'Runtime: {}s'.format(runtime)
-    print 'Finished'
+    print ('Runtime: {}s'.format(runtime))
+    print ('Finished')
