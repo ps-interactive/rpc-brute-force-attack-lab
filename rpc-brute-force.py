@@ -24,7 +24,7 @@ class workerthread(threading.Thread):
                 pwd = self.q.get().strip('\n')
                 out = s.run(["rpcclient", "-U", "{}%{}".format(self.user, pwd), self.rhost, "-c quit"], stdout=s.PIPE, stderr=s.PIPE, encoding="utf-8")
 
-                if ('Error' or 'DENIED' or 'TIMEOUT') not in out.stdout:
+                if ('Error' or 'DENIED' or 'TIMEOUT') not in out.stderr:
                     print ('Success! user:{} pass:{}'.format(self.user, pwd))
                     sys.exit()
 
