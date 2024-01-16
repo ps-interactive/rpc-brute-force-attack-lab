@@ -35,7 +35,7 @@ class workerthread(threading.Thread):
                 else:
                     print ('{}/{} - {} failed.'.format(self.q.qsize(), self.lc, pwd))
             
-            except Exception e:
+            except Exception as e:
                 print (e)
                 return
 
