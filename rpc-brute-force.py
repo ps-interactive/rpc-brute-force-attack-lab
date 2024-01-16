@@ -7,6 +7,7 @@ import subprocess as s
 import queue
 import sys
 import time
+import os
 
 
 class workerthread(threading.Thread):
@@ -26,11 +27,11 @@ class workerthread(threading.Thread):
 
                 if ('Error' or 'DENIED' or 'TIMEOUT') not in out.stderr:
                     print ('Success! user:{} pass:{}'.format(self.user, pwd))
-                    sys.exit()
+                    os._exit(0)
 
-                elif 'TIMEOUT' in out.stdout:
-                    print ('Connection issues. exiting.')
-                    sys.exit()
+                elif 'TIMEOUT' in out.stderr:
+                    print ('Failed to connect to target. Exiting.')
+                    os._exit(1)
                 else:
                     print ('{}/{} - {} failed.'.format(self.q.qsize(), self.lc, pwd))
             
@@ -72,6 +73,3 @@ if __name__ == '__main__':
 
     pwdq.join()  
 
-    runtime = round(time.time() - start, 2)
-    print ('Runtime: {}s'.format(runtime))
-    print ('Finished')
