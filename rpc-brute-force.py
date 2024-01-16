@@ -9,7 +9,6 @@ import sys
 import time
 import os
 
-
 class workerthread(threading.Thread):
 
     def __init__(self, rhost, user, q, lc):
