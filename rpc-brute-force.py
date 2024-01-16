@@ -60,8 +60,6 @@ if __name__ == '__main__':
                    type=int, default=10)
     r = p.parse_args()
 
-    start = time.time()
-
     (pwdq, lc) = build_pwd_queue(r.pwdfile) 
     threadlist = []
 
@@ -73,5 +71,5 @@ if __name__ == '__main__':
 
     pwdq.join()  
 
-print ('Finished. Password not found.')
+    print ('Finished. Password not found.')
 
